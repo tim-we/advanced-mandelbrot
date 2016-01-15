@@ -85,13 +85,25 @@ var Complex = (function () {
     Complex.prototype.scale = function (factor) {
         return new Complex(false, factor * this._real, factor * this._img);
     };
+    Complex.prototype.pow = function (x) {
+        if (this._real == 0 && this._img == 0) {
+            return new Complex(false, 0, 0);
+        }
+        if (x == Math.round(x)) {
+            return this.pow_n(x);
+        }
+        var cexp = Complex.exp(new Complex(false, 0, this.angle));
+        return cexp.scale(Math.pow(Math.E, x * Math.log(this.abs())));
+    };
     Complex.prototype.pow_n = function (n) {
-        n = Math.abs(Math.round(n));
         if (n == 0) {
             return new Complex(false, 1, 0);
         }
         if (this._real == 0 && this._img == 0) {
             return new Complex(false, 0, 0);
+        }
+        if (this._img == 0) {
+            return new Complex(false, Math.pow(this._real, n), 0);
         }
         var product = this.clone();
         for (var i = 1; i < n; i++) {
@@ -110,6 +122,9 @@ var Complex = (function () {
         return z == null ? null : Complex.multiply(a, z);
     };
     Complex.exp = function (z) {
+        if (z.img == 0) {
+            return new Complex(false, Math.pow(Math.E, z.real), 0);
+        }
         var sum = z.clone();
         for (var n = 1; n < Complex.EXP_SUM_LIMIT; n++) {
             var a = z.pow_n(n).scale(1 / SuperMath.factorial(n));

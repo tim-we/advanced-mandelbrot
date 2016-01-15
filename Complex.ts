@@ -67,11 +67,21 @@ class Complex {
 		return new Complex(false, factor * this._real, factor * this._img);
 	}
 	
+	public pow(x: number): Complex {
+		if(this._real == 0 && this._img == 0) { return new Complex(false, 0, 0); }
+		if(x == Math.round(x)) { return this.pow_n(x); }
+		
+		let cexp = Complex.exp(new Complex(false, 0, this.angle));
+		
+		return cexp.scale( Math.pow(Math.E, x * Math.log(this.abs())) );
+	}
+	
 	public pow_n(n: number): Complex {
-		n = Math.abs(Math.round(n));
+		//n = Math.abs(Math.round(n));
 		
 		if(n == 0) { return new Complex(false, 1, 0); }
 		if(this._real == 0 && this._img == 0) { return new Complex(false, 0, 0); }
+		if(this._img == 0) { return new Complex(false, Math.pow(this._real , n), 0); }
 		
 		let product: Complex = this.clone();
 		
@@ -79,7 +89,7 @@ class Complex {
 		
 		return product;
 	}
-	
+
 	constructor(polarform: boolean, data1: number, data2: number) {
 		if(polarform) {
 			this._real = data1 * Math.cos(data2);
@@ -109,6 +119,8 @@ class Complex {
 	}
 	
 	public static exp(z: Complex): Complex {
+		if(z.img == 0) { return new Complex(false, Math.pow(Math.E , z.real), 0); }
+		
 		var sum: Complex = z.clone();
 		
 		for(let n=1; n<Complex.EXP_SUM_LIMIT; n++) {

@@ -1,0 +1,1 @@
+tsc --target ES5 --removeComments Complex.ts

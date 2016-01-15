@@ -1,14 +1,18 @@
-var SuperMath = Object.create(Math);
-SuperMath.factorials = [1, 1];
-SuperMath.factorial = function (n) {
-    n = Math.abs(Math.round(n));
-    if (SuperMath.factorials[n]) {
-        return SuperMath.factorials[n];
+var SuperMath = {
+    factorials: [1, 1],
+    factorial: function (n) {
+        n = Math.abs(Math.round(n));
+        if (SuperMath.factorials[n]) {
+            return SuperMath.factorials[n];
+        }
+        return SuperMath.factorials[n] = SuperMath.factorial(n - 1) * n;
     }
-    return SuperMath.factorials[n] = SuperMath.factorial(n - 1) * n;
 };
 var Complex = (function () {
     function Complex(polarform, data1, data2) {
+        if (polarform === void 0) { polarform = false; }
+        if (data1 === void 0) { data1 = 0; }
+        if (data2 === void 0) { data2 = 0; }
         this._real = 0;
         this._img = 0;
         if (polarform) {
@@ -111,6 +115,15 @@ var Complex = (function () {
         }
         return product;
     };
+    Complex.prototype.toString = function (polarform) {
+        if (polarform === void 0) { polarform = false; }
+        if (polarform) {
+            return this.length + " * e^(i * " + this.angle + ")";
+        }
+        else {
+            return this._real + (this._img < 0 ? " " : " + ") + this._img + "i";
+        }
+    };
     Complex.add = function (a, b) {
         return new Complex(false, a.real + b.real, a.img + b.img);
     };
@@ -136,5 +149,7 @@ var Complex = (function () {
         return sum;
     };
     Complex.EXP_SUM_LIMIT = 42;
+    Complex.E1 = new Complex(false, 1, 0);
+    Complex.E2 = new Complex(false, 0, 1);
     return Complex;
 })();

@@ -1,18 +1,24 @@
-var SuperMath = Object.create(Math);
-SuperMath.factorials = [1,1];
-SuperMath.factorial = function(n: number): number {
-	n = Math.abs(Math.round(n));
+var SuperMath = {
 	
-	if(SuperMath.factorials[n]) { return SuperMath.factorials[n]; }
+	factorials: [1,1],
 	
-	return SuperMath.factorials[n] = SuperMath.factorial(n - 1) * n;
-}
+	factorial: function(n: number): number {
+		n = Math.abs(Math.round(n));
+		
+		if(SuperMath.factorials[n]) { return SuperMath.factorials[n]; }
+		
+		return SuperMath.factorials[n] = SuperMath.factorial(n - 1) * n;
+	}
+};
 
 class Complex {
 	
 	private static EXP_SUM_LIMIT: number = 42;
 	private _real: number = 0;
 	private _img: number = 0;
+	
+	public static E1: Complex = new Complex(false, 1, 0);
+	public static E2: Complex = new Complex(false, 0, 1);
 	
 	public get real(): number {
 		return this._real;
@@ -89,8 +95,16 @@ class Complex {
 		
 		return product;
 	}
+	
+	public toString(polarform: boolean = false): string {
+		if(polarform) {
+			return this.length + " * e^(i * " + this.angle + ")";
+		} else {
+			return this._real + (this._img < 0 ? " " : " + ") + this._img + "i";
+		}
+	}
 
-	constructor(polarform: boolean, data1: number, data2: number) {
+	constructor(polarform: boolean = false, data1: number = 0, data2: number = 0) {
 		if(polarform) {
 			this._real = data1 * Math.cos(data2);
 			this._img = data1 * Math.sin(data2);
@@ -127,7 +141,7 @@ class Complex {
 			let a: Complex = z.pow_n(n).scale( 1/SuperMath.factorial(n) );
 			
 			if(a.real == 0 && a.img == 0) { break; }
-			
+						
 			sum = Complex.add(sum, a);
 		}
 		

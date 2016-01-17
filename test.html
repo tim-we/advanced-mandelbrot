@@ -10,12 +10,12 @@
 	
 	<body>
 		<script>
-			var test = new Complex(false, 2, 0);
+			var test = new Complex(false, 3, 4);
 			
-			var exptest = Complex.exp(test);
-			//test.pow(2.1);
+			//var exptest = Complex.exp(test);
+			exptest = test.pow(1.5);
 			
-			alert(exptest);
+			alert("(" + test + ")^1.5 = " + exptest);
 			alert(exptest.toString(true));
 		</script>
 	</body>

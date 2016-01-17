@@ -89,16 +89,6 @@ var Complex = (function () {
     Complex.prototype.scale = function (factor) {
         return new Complex(false, factor * this._real, factor * this._img);
     };
-    Complex.prototype.pow = function (x) {
-        if (this._real == 0 && this._img == 0) {
-            return new Complex(false, 0, 0);
-        }
-        if (x == Math.round(x)) {
-            return this.pow_n(x);
-        }
-        var cexp = Complex.exp(new Complex(false, 0, this.angle));
-        return cexp.scale(Math.pow(Math.E, x * Math.log(this.abs())));
-    };
     Complex.prototype.pow_n = function (n) {
         if (n == 0) {
             return new Complex(false, 1, 0);
@@ -114,6 +104,16 @@ var Complex = (function () {
             product = Complex.multiply(product, this);
         }
         return product;
+    };
+    Complex.prototype.pow = function (x) {
+        if (this._real == 0 && this._img == 0) {
+            return new Complex(false, 0, 0);
+        }
+        if (x == Math.round(x)) {
+            return this.pow_n(x);
+        }
+        var cexp = Complex.exp(new Complex(false, 0, x * this.angle));
+        return cexp.scale(Math.pow(Math.E, x * Math.log(this.abs())));
     };
     Complex.prototype.toString = function (polarform) {
         if (polarform === void 0) { polarform = false; }
@@ -138,7 +138,7 @@ var Complex = (function () {
         if (z.img == 0) {
             return new Complex(false, Math.pow(Math.E, z.real), 0);
         }
-        var sum = z.clone();
+        var sum = new Complex(false, 1, 0);
         for (var n = 1; n < Complex.EXP_SUM_LIMIT; n++) {
             var a = z.pow_n(n).scale(1 / SuperMath.factorial(n));
             if (a.real == 0 && a.img == 0) {

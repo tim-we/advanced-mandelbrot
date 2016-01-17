@@ -73,15 +73,6 @@ class Complex {
 		return new Complex(false, factor * this._real, factor * this._img);
 	}
 	
-	public pow(x: number): Complex {
-		if(this._real == 0 && this._img == 0) { return new Complex(false, 0, 0); }
-		if(x == Math.round(x)) { return this.pow_n(x); }
-		
-		let cexp = Complex.exp(new Complex(false, 0, this.angle));
-		
-		return cexp.scale( Math.pow(Math.E, x * Math.log(this.abs())) );
-	}
-	
 	public pow_n(n: number): Complex {
 		//n = Math.abs(Math.round(n));
 		
@@ -94,6 +85,15 @@ class Complex {
 		for(let i=1; i<n; i++) { product = Complex.multiply(product, this); }
 		
 		return product;
+	}
+	
+	public pow(x: number): Complex {
+		if(this._real == 0 && this._img == 0) { return new Complex(false, 0, 0); }
+		if(x == Math.round(x)) { return this.pow_n(x); }
+		
+		let cexp = Complex.exp(new Complex(false, 0, x * this.angle));
+		
+		return cexp.scale( Math.pow(Math.E, x * Math.log(this.abs())) );
 	}
 	
 	public toString(polarform: boolean = false): string {
@@ -135,13 +135,13 @@ class Complex {
 	public static exp(z: Complex): Complex {
 		if(z.img == 0) { return new Complex(false, Math.pow(Math.E , z.real), 0); }
 		
-		var sum: Complex = z.clone();
+		var sum: Complex = new Complex(false, 1, 0);
 		
 		for(let n=1; n<Complex.EXP_SUM_LIMIT; n++) {
 			let a: Complex = z.pow_n(n).scale( 1/SuperMath.factorial(n) );
 			
 			if(a.real == 0 && a.img == 0) { break; }
-						
+				
 			sum = Complex.add(sum, a);
 		}
 		

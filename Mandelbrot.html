@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<meta charset="utf-8">
+		<title>mandelbrot drawing & tests</title>
+		
+		<script src="Complex.js"></script>
+		
+		<style>
+			#mb-canvas {
+				background-color: rgb(240,240,240);
+			}
+		</style>
+	</head>
+	
+	<body>
+		<canvas id="mb-canvas" width="480" height="480"></canvas>
+		<script src="Mandelbrot.js"></script>
+		<script>
+			//canvasFillPixel(42,42,{r:42,g:42,b:255});
+			//alert(inMandelbrotSet(new Complex(false, 0, 0)) + " ");
+			drawMandelbrot();
+		</script>
+	</body>
+	
+</html>

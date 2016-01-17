@@ -77,6 +77,14 @@ class Complex {
 		return new Complex(factor * this._real, factor * this._img);
 	}
 	
+	public conjugate(): Complex {
+		return new Complex(this._real, this._img * (-1));
+	}
+	
+	public get conj(): Complex {
+		return this.conjugate();
+	}
+	
 	public pow_n(n: number): Complex {
 		
 		if(n == 0) { return Complex.E1; }
@@ -91,24 +99,12 @@ class Complex {
 	}
 	
 	public pow(x: Complex): Complex {
-/*
-		if(x == 0) { return Complex.E1; }
-		if(this.isNull()) { return new Complex(); }
-				
-		if(x == Math.round(x)) { return this.pow_n(x); }
-		
-		let cexp = Complex.exp(new Complex(0, x * this.angle));
-		let sqr: number = (this._real * this._real) + (this._img * this._img);
-		
-		return cexp.scale( Math.pow(Math.E, 0.5 * x * Math.log(sqr)) );
-		*/
-
 		if(x.isNull()) { return Complex.E1; }
 		if(this.isNull()) { return new Complex(); }
 		
 		if(x.img == 0 && x.real == Math.round(x.real)) { return this.pow_n(x.real); }
 		
-		let ln: number = 0.5 * Math.log((this.real * this.real) + (this.img * this.img)); //0.5 same as sqrt
+		let ln: number = 0.5 * Math.log((this._real * this._real) + (this._img * this._img)); //0.5x same as sqrt
 		let phi: number = this.angle;
 		let p: Complex = new Complex( (ln * x.real) - (x.img * phi), (ln * x.img) + (x.real*phi) );
 		

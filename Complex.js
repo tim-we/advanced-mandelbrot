@@ -92,6 +92,16 @@ var Complex = (function () {
     Complex.prototype.scale = function (factor) {
         return new Complex(factor * this._real, factor * this._img);
     };
+    Complex.prototype.conjugate = function () {
+        return new Complex(this._real, this._img * (-1));
+    };
+    Object.defineProperty(Complex.prototype, "conj", {
+        get: function () {
+            return this.conjugate();
+        },
+        enumerable: true,
+        configurable: true
+    });
     Complex.prototype.pow_n = function (n) {
         if (n == 0) {
             return Complex.E1;
@@ -118,7 +128,7 @@ var Complex = (function () {
         if (x.img == 0 && x.real == Math.round(x.real)) {
             return this.pow_n(x.real);
         }
-        var ln = 0.5 * Math.log((this.real * this.real) + (this.img * this.img));
+        var ln = 0.5 * Math.log((this._real * this._real) + (this._img * this._img));
         var phi = this.angle;
         var p = new Complex((ln * x.real) - (x.img * phi), (ln * x.img) + (x.real * phi));
         return Complex.exp(p);

@@ -9,10 +9,10 @@ var SuperMath = {
     }
 };
 var Complex = (function () {
-    function Complex(polarform, data1, data2) {
-        if (polarform === void 0) { polarform = false; }
+    function Complex(data1, data2, polarform) {
         if (data1 === void 0) { data1 = 0; }
         if (data2 === void 0) { data2 = 0; }
+        if (polarform === void 0) { polarform = false; }
         this._real = 0;
         this._img = 0;
         if (polarform) {
@@ -81,23 +81,26 @@ var Complex = (function () {
             return null;
         }
         var denominator = (this._real * this._real) + (this._img * this._img);
-        return new Complex(false, this._real / denominator, this._img / denominator);
+        return new Complex(this._real / denominator, this._img / denominator);
     };
     Complex.prototype.clone = function () {
-        return new Complex(false, this._real, this._img);
+        return new Complex(this._real, this._img);
+    };
+    Complex.prototype.isNull = function () {
+        return this.real == 0 && this.img == 0;
     };
     Complex.prototype.scale = function (factor) {
-        return new Complex(false, factor * this._real, factor * this._img);
+        return new Complex(factor * this._real, factor * this._img);
     };
     Complex.prototype.pow_n = function (n) {
         if (n == 0) {
-            return new Complex(false, 1, 0);
+            return Complex.E1;
         }
-        if (this._real == 0 && this._img == 0) {
-            return new Complex(false, 0, 0);
+        if (this.isNull()) {
+            return new Complex();
         }
         if (this._img == 0) {
-            return new Complex(false, Math.pow(this._real, n), 0);
+            return new Complex(Math.pow(this._real, n), 0);
         }
         var product = this.clone();
         for (var i = 1; i < n; i++) {
@@ -106,14 +109,19 @@ var Complex = (function () {
         return product;
     };
     Complex.prototype.pow = function (x) {
-        if (this._real == 0 && this._img == 0) {
-            return new Complex(false, 0, 0);
+        if (x.isNull()) {
+            return Complex.E1;
         }
-        if (x == Math.round(x)) {
-            return this.pow_n(x);
+        if (this.isNull()) {
+            return new Complex();
         }
-        var cexp = Complex.exp(new Complex(false, 0, x * this.angle));
-        return cexp.scale(Math.pow(Math.E, x * Math.log(this.abs())));
+        if (x.img == 0 && x.real == Math.round(x.real)) {
+            return this.pow_n(x.real);
+        }
+        var ln = 0.5 * Math.log((this.real * this.real) + (this.img * this.img));
+        var phi = this.angle;
+        var p = new Complex((ln * x.real) - (x.img * phi), (ln * x.img) + (x.real * phi));
+        return Complex.exp(p);
     };
     Complex.prototype.toString = function (polarform) {
         if (polarform === void 0) { polarform = false; }
@@ -125,20 +133,23 @@ var Complex = (function () {
         }
     };
     Complex.add = function (a, b) {
-        return new Complex(false, a.real + b.real, a.img + b.img);
+        return new Complex(a.real + b.real, a.img + b.img);
     };
     Complex.multiply = function (a, b) {
-        return new Complex(false, (a.real * b.real) - (a.img * b.img), (a.real * b.img) + (a.img * b.real));
+        return new Complex((a.real * b.real) - (a.img * b.img), (a.real * b.img) + (a.img * b.real));
     };
     Complex.divide = function (a, b) {
         var z = b.inverse();
         return z == null ? null : Complex.multiply(a, z);
     };
+    Complex.equals = function (a, b) {
+        return a.real == b.real && a.img == b.img;
+    };
     Complex.exp = function (z) {
         if (z.img == 0) {
-            return new Complex(false, Math.pow(Math.E, z.real), 0);
+            return new Complex(Math.pow(Math.E, z.real), 0);
         }
-        var sum = new Complex(false, 1, 0);
+        var sum = new Complex(1, 0);
         for (var n = 1; n < Complex.EXP_SUM_LIMIT; n++) {
             var a = z.pow_n(n).scale(1 / SuperMath.factorial(n));
             if (a.real == 0 && a.img == 0) {
@@ -148,8 +159,8 @@ var Complex = (function () {
         }
         return sum;
     };
-    Complex.EXP_SUM_LIMIT = 42;
-    Complex.E1 = new Complex(false, 1, 0);
-    Complex.E2 = new Complex(false, 0, 1);
+    Complex.EXP_SUM_LIMIT = 25;
+    Complex.E1 = new Complex(1, 0);
+    Complex.E2 = new Complex(0, 1);
     return Complex;
 })();

@@ -13,12 +13,12 @@ var SuperMath = {
 
 class Complex {
 	
-	private static EXP_SUM_LIMIT: number = 42;
+	private static EXP_SUM_LIMIT: number = 25;
 	private _real: number = 0;
 	private _img: number = 0;
 	
-	public static E1: Complex = new Complex(false, 1, 0);
-	public static E2: Complex = new Complex(false, 0, 1);
+	public static E1: Complex = new Complex(1, 0);
+	public static E2: Complex = new Complex(0, 1);
 	
 	public get real(): number {
 		return this._real;
@@ -62,23 +62,26 @@ class Complex {
 		
 		let denominator: number = (this._real * this._real) + (this._img * this._img);
 		
-		return new Complex(false, this._real / denominator, this._img / denominator);
+		return new Complex(this._real / denominator, this._img / denominator);
 	}
 	
 	public clone(): Complex {
-		return new Complex(false, this._real, this._img);
+		return new Complex(this._real, this._img);
+	}
+	
+	public isNull(): boolean {
+		return this.real==0 && this.img==0;
 	}
 	
 	public scale(factor: number): Complex {
-		return new Complex(false, factor * this._real, factor * this._img);
+		return new Complex(factor * this._real, factor * this._img);
 	}
 	
 	public pow_n(n: number): Complex {
-		//n = Math.abs(Math.round(n));
 		
-		if(n == 0) { return new Complex(false, 1, 0); }
-		if(this._real == 0 && this._img == 0) { return new Complex(false, 0, 0); }
-		if(this._img == 0) { return new Complex(false, Math.pow(this._real , n), 0); }
+		if(n == 0) { return Complex.E1; }
+		if(this.isNull()) { return new Complex(); }
+		if(this._img == 0) { return new Complex(Math.pow(this._real , n), 0); }
 		
 		let product: Complex = this.clone();
 		
@@ -87,13 +90,29 @@ class Complex {
 		return product;
 	}
 	
-	public pow(x: number): Complex {
-		if(this._real == 0 && this._img == 0) { return new Complex(false, 0, 0); }
+	public pow(x: Complex): Complex {
+/*
+		if(x == 0) { return Complex.E1; }
+		if(this.isNull()) { return new Complex(); }
+				
 		if(x == Math.round(x)) { return this.pow_n(x); }
 		
-		let cexp = Complex.exp(new Complex(false, 0, x * this.angle));
+		let cexp = Complex.exp(new Complex(0, x * this.angle));
+		let sqr: number = (this._real * this._real) + (this._img * this._img);
 		
-		return cexp.scale( Math.pow(Math.E, x * Math.log(this.abs())) );
+		return cexp.scale( Math.pow(Math.E, 0.5 * x * Math.log(sqr)) );
+		*/
+
+		if(x.isNull()) { return Complex.E1; }
+		if(this.isNull()) { return new Complex(); }
+		
+		if(x.img == 0 && x.real == Math.round(x.real)) { return this.pow_n(x.real); }
+		
+		let ln: number = 0.5 * Math.log((this.real * this.real) + (this.img * this.img)); //0.5 same as sqrt
+		let phi: number = this.angle;
+		let p: Complex = new Complex( (ln * x.real) - (x.img * phi), (ln * x.img) + (x.real*phi) );
+		
+		return Complex.exp(p);
 	}
 	
 	public toString(polarform: boolean = false): string {
@@ -104,7 +123,7 @@ class Complex {
 		}
 	}
 
-	constructor(polarform: boolean = false, data1: number = 0, data2: number = 0) {
+	constructor(data1: number = 0, data2: number = 0, polarform: boolean = false) {
 		if(polarform) {
 			this._real = data1 * Math.cos(data2);
 			this._img = data1 * Math.sin(data2);
@@ -115,12 +134,11 @@ class Complex {
 	}
 	
 	public static add(a: Complex, b: Complex): Complex {
-		return new Complex(false, a.real + b.real, a.img + b.img);
+		return new Complex(a.real + b.real, a.img + b.img);
 	}
 	
 	public static multiply(a: Complex, b: Complex): Complex {
 		return new Complex(
-				false, 
 				(a.real * b.real) - (a.img * b.img), 
 				(a.real * b.img) + (a.img * b.real)
 			);
@@ -132,10 +150,14 @@ class Complex {
 		return z==null ? null : Complex.multiply(a,z);
 	}
 	
+	public static equals(a: Complex, b: Complex) {
+		return a.real==b.real && a.img==b.img;
+	}
+	
 	public static exp(z: Complex): Complex {
-		if(z.img == 0) { return new Complex(false, Math.pow(Math.E , z.real), 0); }
+		if(z.img == 0) { return new Complex(Math.pow(Math.E , z.real), 0); }
 		
-		var sum: Complex = new Complex(false, 1, 0);
+		var sum: Complex = new Complex(1, 0);
 		
 		for(let n=1; n<Complex.EXP_SUM_LIMIT; n++) {
 			let a: Complex = z.pow_n(n).scale( 1/SuperMath.factorial(n) );

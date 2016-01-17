@@ -2,12 +2,12 @@
 var canvas = document.getElementById("mb-canvas");
 var ctx = canvas.getContext("2d");
 
-var WIDTH = 480;
-var HEIGHT = 480;
+var WIDTH = 200;
+var HEIGHT = 200;
 
-var MAX_ITERATIONS_LIMIT = 400;
+var MAX_ITERATIONS_LIMIT = 200;
 
-var POWER = 2;
+var POWER = new Complex(2,0);
 
 function canvasFillPixel(x,y,color) {
 	ctx.fillStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
@@ -18,11 +18,11 @@ function CoordsToComplex(x,y) {
 	var real = -2 + ((x / WIDTH) * 4);
 	var img = 2 - ((y / HEIGHT) * 4);
 	
-	return new Complex(false, real, img);
+	return new Complex(real, img);
 }
 
 function inMandelbrotSet(c) {
-	var z = new Complex(false, 0,0);
+	var z = new Complex();
 	
 	var i;
 	for(i=0; i<MAX_ITERATIONS_LIMIT; i++) {
@@ -36,6 +36,8 @@ function inMandelbrotSet(c) {
 }
 
 function drawMandelbrot() {
+	
+	var start = performance.now();
 	
 	var inset = 0;
 	var total = 0;
@@ -54,4 +56,5 @@ function drawMandelbrot() {
 	}
 	
 	console.log("In the set: " + inset + "/" + total);
+	console.log("It took: " + (performance.now() - start) + "ms");
 }

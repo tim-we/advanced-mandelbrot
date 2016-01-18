@@ -2,12 +2,12 @@
 var canvas = document.getElementById("mb-canvas");
 var ctx = canvas.getContext("2d");
 
-var WIDTH = 200;
-var HEIGHT = 200;
+var WIDTH = 720;
+var HEIGHT = 720;
 
 var MAX_ITERATIONS_LIMIT = 200;
 
-var POWER = new Complex(2,0);
+var POWER = new Complex(Math.PI,0);
 
 function canvasFillPixel(x,y,color) {
 	ctx.fillStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
@@ -56,5 +56,6 @@ function drawMandelbrot() {
 	}
 	
 	console.log("In the set: " + inset + "/" + total);
-	console.log("It took: " + (performance.now() - start) + "ms");
+	console.log("Approx. area: " + (inset/total) * 16);
+	console.log("computation time: " + (performance.now() - start) + "ms");
 }

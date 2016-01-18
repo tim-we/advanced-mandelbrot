@@ -106,6 +106,7 @@ class Complex {
 		
 		let ln: number = 0.5 * Math.log((this._real * this._real) + (this._img * this._img)); //0.5x same as sqrt
 		let phi: number = this.angle;
+		
 		let p: Complex = new Complex( (ln * x.real) - (x.img * phi), (ln * x.img) + (x.real*phi) );
 		
 		return Complex.exp(p);
@@ -153,6 +154,9 @@ class Complex {
 	public static exp(z: Complex): Complex {
 		if(z.img == 0) { return new Complex(Math.pow(Math.E , z.real), 0); }
 		
+		return new Complex(Math.pow(Math.E, z.real), z.img, true);
+		
+		/*//old code:
 		var sum: Complex = new Complex(1, 0);
 		
 		for(let n=1; n<Complex.EXP_SUM_LIMIT; n++) {
@@ -163,7 +167,7 @@ class Complex {
 			sum = Complex.add(sum, a);
 		}
 		
-		return sum;
+		return sum;*/
 	}
 	
 }

@@ -159,15 +159,7 @@ var Complex = (function () {
         if (z.img == 0) {
             return new Complex(Math.pow(Math.E, z.real), 0);
         }
-        var sum = new Complex(1, 0);
-        for (var n = 1; n < Complex.EXP_SUM_LIMIT; n++) {
-            var a = z.pow_n(n).scale(1 / SuperMath.factorial(n));
-            if (a.real == 0 && a.img == 0) {
-                break;
-            }
-            sum = Complex.add(sum, a);
-        }
-        return sum;
+        return new Complex(Math.pow(Math.E, z.real), z.img, true);
     };
     Complex.EXP_SUM_LIMIT = 25;
     Complex.E1 = new Complex(1, 0);

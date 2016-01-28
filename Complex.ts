@@ -1,15 +1,17 @@
-var SuperMath = {
+/// <reference path="_Math.ts" />
+
+/*var _Math = {
 	
 	factorials: [1,1],
 	
 	factorial: function(n: number): number {
 		n = Math.abs(Math.round(n));
 		
-		if(SuperMath.factorials[n]) { return SuperMath.factorials[n]; }
+		if(_Math.factorials[n]) { return _Math.factorials[n]; }
 		
-		return SuperMath.factorials[n] = SuperMath.factorial(n - 1) * n;
+		return _Math.factorials[n] = _Math.factorial(n - 1) * n;
 	}
-};
+};*/
 
 class Complex {
 	
@@ -160,7 +162,7 @@ class Complex {
 		var sum: Complex = new Complex(1, 0);
 		
 		for(let n=1; n<Complex.EXP_SUM_LIMIT; n++) {
-			let a: Complex = z.pow_n(n).scale( 1/SuperMath.factorial(n) );
+			let a: Complex = z.pow_n(n).scale( 1/_Math.factorial(n) );
 			
 			if(a.real == 0 && a.img == 0) { break; }
 				

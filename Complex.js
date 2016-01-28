@@ -1,13 +1,3 @@
-var SuperMath = {
-    factorials: [1, 1],
-    factorial: function (n) {
-        n = Math.abs(Math.round(n));
-        if (SuperMath.factorials[n]) {
-            return SuperMath.factorials[n];
-        }
-        return SuperMath.factorials[n] = SuperMath.factorial(n - 1) * n;
-    }
-};
 var Complex = (function () {
     function Complex(data1, data2, polarform) {
         if (data1 === void 0) { data1 = 0; }
@@ -165,4 +155,4 @@ var Complex = (function () {
     Complex.E1 = new Complex(1, 0);
     Complex.E2 = new Complex(0, 1);
     return Complex;
-})();
+}());
